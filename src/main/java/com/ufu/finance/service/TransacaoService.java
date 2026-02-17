@@ -3,11 +3,11 @@ package com.ufu.finance.service;
 import com.ufu.finance.dto.*;
 import com.ufu.finance.entity.Categoria;
 import com.ufu.finance.entity.Transacao;
-import com.ufu.finance.entity.User;
+import com.ufu.finance.entity.Usuario;
 import com.ufu.finance.enums.TipoTransacao;
 import com.ufu.finance.repository.CategoriaRepository;
 import com.ufu.finance.repository.TransacaoRepository;
-import com.ufu.finance.repository.UserRepository;
+import com.ufu.finance.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class TransacaoService {
     private TransacaoRepository transacaoRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -32,22 +32,22 @@ public class TransacaoService {
     // ─── CRUD ────────────────────────────────────────────────────────────────
 
     /** Cria uma nova transação vinculada ao usuário autenticado */
-    public TransactionResponseDTO criar(TransactionRequestDTO dto, Long usuarioId) {
-        User user = userRepository.findById(usuarioId)
+    public TransacaoResponseDTO criar(TransacaoRequestDTO dto, Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
         Transacao transacao = new Transacao();
-        transacao.setUsuario(user);
+        transacao.setUsuario(usuario);
         transacao.setCategoria(categoria);
         transacao.setValor(dto.getValor());
         transacao.setDataHoraTransacao(LocalDateTime.now());
         transacao.setDescricao(dto.getDescricao());
         transacao.setTipo(dto.getTipo());
 
-        return new TransactionResponseDTO(transacaoRepository.save(transacao));
+        return new TransacaoResponseDTO(transacaoRepository.save(transacao));
     }
 
     /** Remove uma transação — só o dono pode deletar */
@@ -65,54 +65,54 @@ public class TransacaoService {
     // ─── Consultas ────────────────────────────────────────────────────────────
 
     /** Todas as transações do usuário logado */
-    public List<TransactionResponseDTO> listarPorUsuario(Long usuarioId) {
+    public List<TransacaoResponseDTO> listarPorUsuario(Long usuarioId) {
         return transacaoRepository
                 .findByUsuarioIdOrderByDataHoraTransacaoDesc(usuarioId)
                 .stream()
-                .map(TransactionResponseDTO::new)
+                .map(TransacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     /** Transações filtradas por tipo (R ou D) */
-    public List<TransactionResponseDTO> listarPorTipo(Long usuarioId, TipoTransacao tipo) {
+    public List<TransacaoResponseDTO> listarPorTipo(Long usuarioId, TipoTransacao tipo) {
         return transacaoRepository
                 .findByUsuarioIdAndTipoOrderByDataHoraTransacaoDesc(usuarioId, tipo)
                 .stream()
-                .map(TransactionResponseDTO::new)
+                .map(TransacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     /** Transações dentro de um mês/ano */
-    public List<TransactionResponseDTO> listarPorMesAno(Long usuarioId, int mes, int ano) {
+    public List<TransacaoResponseDTO> listarPorMesAno(Long usuarioId, int mes, int ano) {
         validarMesAno(mes, ano);
         return transacaoRepository
                 .findByUsuarioIdAndMesAno(usuarioId, mes, ano)
                 .stream()
-                .map(TransactionResponseDTO::new)
+                .map(TransacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     /** Transações filtradas por intervalo de datas */
-    public List<TransactionResponseDTO> listarPorPeriodo(Long usuarioId, LocalDate inicio, LocalDate fim) {
+    public List<TransacaoResponseDTO> listarPorPeriodo(Long usuarioId, LocalDate inicio, LocalDate fim) {
         if (inicio.isAfter(fim)) {
             throw new RuntimeException("Data de início não pode ser posterior à data de fim");
         }
         return transacaoRepository
                 .findByUsuarioIdAndDataHoraTransacaoBetweenOrderByDataHoraTransacaoDesc(usuarioId, inicio, fim)
                 .stream()
-                .map(TransactionResponseDTO::new)
+                .map(TransacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     /** Transações por categoria */
-    public List<TransactionResponseDTO> listarPorCategoria(Long usuarioId, Integer categoriaId) {
+    public List<TransacaoResponseDTO> listarPorCategoria(Long usuarioId, Integer categoriaId) {
         categoriaRepository.findById(categoriaId)
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
         return transacaoRepository
                 .findByUsuarioIdAndCategoriaIdOrderByDataHoraTransacaoDesc(usuarioId, categoriaId)
                 .stream()
-                .map(TransactionResponseDTO::new)
+                .map(TransacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
 

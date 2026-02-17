@@ -1,6 +1,6 @@
 package com.ufu.finance.dto;
 
-import com.ufu.finance.entity.User;
+import com.ufu.finance.entity.Usuario;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,10 +16,10 @@ public class UserResponseDTO {
     public UserResponseDTO() {
     }
     
-    public UserResponseDTO(User user) {
-        this.id = user.getId();
-        this.nome = user.getNome();
-        this.email = user.getEmail();
-        this.dataInclusao = user.getDataInclusao();
+    public UserResponseDTO(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.dataInclusao = usuario.getDataInclusao();
     }
 }

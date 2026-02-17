@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-public class TransactionRequestDTO {
+public class TransacaoRequestDTO {
 
     @NotNull(message = "Tipo é obrigatório")
     private TipoTransacao tipo; // "R" ou "D"

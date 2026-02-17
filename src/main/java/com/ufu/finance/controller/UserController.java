@@ -2,7 +2,7 @@ package com.ufu.finance.controller;
 
 import com.ufu.finance.dto.UserDTO;
 import com.ufu.finance.dto.UserResponseDTO;
-import com.ufu.finance.service.UserService;
+import com.ufu.finance.service.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UsuarioService usuarioService;
 
     /**
      * Cadastra um novo usuário (rota pública).
      */
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> cadastrarUsuario(@Valid @RequestBody UserDTO userDTO) {
-        UserResponseDTO user = userService.cadastrarUsuario(userDTO);
+        UserResponseDTO user = usuarioService.cadastrarUsuario(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
@@ -34,7 +34,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> buscarUsuario(@PathVariable Long id) {
-        UserResponseDTO user = userService.buscarPorId(id);
+        UserResponseDTO user = usuarioService.buscarPorId(id);
         return ResponseEntity.ok(user);
     }
 
@@ -43,7 +43,7 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> listarUsuarios() {
-        return ResponseEntity.ok(userService.listarTodos());
+        return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
     /**

@@ -2,8 +2,8 @@ package com.ufu.finance.service;
 
 import com.ufu.finance.dto.UserDTO;
 import com.ufu.finance.dto.UserResponseDTO;
-import com.ufu.finance.entity.User;
-import com.ufu.finance.repository.UserRepository;
+import com.ufu.finance.entity.Usuario;
+import com.ufu.finance.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,10 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UsuarioService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UsuarioRepository usuarioRepository;
 
     // BCrypt com força 12 (padrão é 10; 12 é mais seguro sem impacto perceptível)
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
@@ -32,33 +32,33 @@ public class UserService {
      * Cadastra um novo usuário com senha criptografada
      */
     public UserResponseDTO cadastrarUsuario(UserDTO userDTO) {
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
+        if (usuarioRepository.existsByEmail(userDTO.getEmail())) {
             throw new RuntimeException("Email já está em uso");
         }
 
-        User user = new User();
-        user.setNome(userDTO.getNome().trim());
-        user.setEmail(userDTO.getEmail().toLowerCase().trim());
-        user.setSenha(passwordEncoder.encode(userDTO.getSenha())); // 🔒 hash BCrypt
+        Usuario usuario = new Usuario();
+        usuario.setNome(userDTO.getNome().trim());
+        usuario.setEmail(userDTO.getEmail().toLowerCase().trim());
+        usuario.setSenha(passwordEncoder.encode(userDTO.getSenha())); // 🔒 hash BCrypt
 
-        User savedUser = userRepository.save(user);
-        return new UserResponseDTO(savedUser);
+        Usuario savedUsuario = usuarioRepository.save(usuario);
+        return new UserResponseDTO(savedUsuario);
     }
 
     /**
      * Busca um usuário por ID
      */
     public UserResponseDTO buscarPorId(Long id) {
-        User user = userRepository.findById(id)
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        return new UserResponseDTO(user);
+        return new UserResponseDTO(usuario);
     }
 
     /**
      * Lista todos os usuários
      */
     public List<UserResponseDTO> listarTodos() {
-        return userRepository.findAll()
+        return usuarioRepository.findAll()
                 .stream()
                 .map(UserResponseDTO::new)
                 .collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class UserService {
     /**
      * Busca usuário por email (usado no login)
      */
-    public Optional<User> buscarPorEmail(String email) {
-        return userRepository.findByEmail(email.toLowerCase().trim());
+    public Optional<Usuario> buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email.toLowerCase().trim());
     }
 }

@@ -2,8 +2,8 @@ package com.ufu.finance.controller;
 
 import com.ufu.finance.dto.EvolucaoMensalDTO;
 import com.ufu.finance.dto.ResumoMensalDTO;
-import com.ufu.finance.dto.TransactionRequestDTO;
-import com.ufu.finance.dto.TransactionResponseDTO;
+import com.ufu.finance.dto.TransacaoRequestDTO;
+import com.ufu.finance.dto.TransacaoResponseDTO;
 import com.ufu.finance.enums.TipoTransacao;
 import com.ufu.finance.service.TransacaoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,12 +40,12 @@ public class TransacaoController {
      * }
      */
     @PostMapping
-    public ResponseEntity<TransactionResponseDTO> criar(
-            @Valid @RequestBody TransactionRequestDTO dto,
+    public ResponseEntity<TransacaoResponseDTO> criar(
+            @Valid @RequestBody TransacaoRequestDTO dto,
             HttpServletRequest request) {
 
         Long usuarioId = (Long) request.getAttribute("userId");
-        TransactionResponseDTO response = transacaoService.criar(dto, usuarioId);
+        TransacaoResponseDTO response = transacaoService.criar(dto, usuarioId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -67,7 +67,7 @@ public class TransacaoController {
      * Todas as transações do usuário logado.
      */
     @GetMapping
-    public ResponseEntity<List<TransactionResponseDTO>> listarTodas(HttpServletRequest request) {
+    public ResponseEntity<List<TransacaoResponseDTO>> listarTodas(HttpServletRequest request) {
         Long usuarioId = (Long) request.getAttribute("userId");
         return ResponseEntity.ok(transacaoService.listarPorUsuario(usuarioId));
     }
@@ -79,7 +79,7 @@ public class TransacaoController {
      * Exemplo: GET /api/transaction/tipo/D
      */
     @GetMapping("/tipo/{tipo}")
-    public ResponseEntity<List<TransactionResponseDTO>> listarPorTipo(
+    public ResponseEntity<List<TransacaoResponseDTO>> listarPorTipo(
             @PathVariable TipoTransacao tipo,
             HttpServletRequest request) {
 
@@ -92,7 +92,7 @@ public class TransacaoController {
      * Transações de um mês/ano específico.
      */
     @GetMapping("/mes")
-    public ResponseEntity<List<TransactionResponseDTO>> listarPorMes(
+    public ResponseEntity<List<TransacaoResponseDTO>> listarPorMes(
             @RequestParam int mes,
             @RequestParam int ano,
             HttpServletRequest request) {
@@ -106,7 +106,7 @@ public class TransacaoController {
      * Transações em um intervalo de datas.
      */
     @GetMapping("/periodo")
-    public ResponseEntity<List<TransactionResponseDTO>> listarPorPeriodo(
+    public ResponseEntity<List<TransacaoResponseDTO>> listarPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim,
             HttpServletRequest request) {
@@ -120,7 +120,7 @@ public class TransacaoController {
      * Transações filtradas por categoria.
      */
     @GetMapping("/categoria/{idCategoria}")
-    public ResponseEntity<List<TransactionResponseDTO>> listarPorCategoria(
+    public ResponseEntity<List<TransacaoResponseDTO>> listarPorCategoria(
             @PathVariable Integer idCategoria,
             HttpServletRequest request) {
 

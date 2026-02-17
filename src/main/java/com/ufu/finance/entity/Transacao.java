@@ -26,7 +26,7 @@ public class Transacao {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
-    private User usuario;
+    private Usuario usuario;
 
     /**
      * Categoria da transação — FK para a tabela categorias.

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class TransactionResponseDTO {
+public class TransacaoResponseDTO {
 
     private Long idTransacao;
     private Long idUsuario;
@@ -22,7 +22,7 @@ public class TransactionResponseDTO {
     private String tipo;         // "R" ou "D"
     private String tipoDescricao; // "Receita" ou "Despesa"
 
-    public TransactionResponseDTO(Transacao t) {
+    public TransacaoResponseDTO(Transacao t) {
         this.idTransacao   = t.getId();
         this.idUsuario     = t.getUsuario().getId();
         this.idCategoria   = t.getCategoria().getId();

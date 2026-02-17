@@ -2,8 +2,8 @@ package com.ufu.finance.service.auth;
 
 import com.ufu.finance.dto.AuthResponseDTO;
 import com.ufu.finance.dto.LoginDTO;
-import com.ufu.finance.entity.User;
-import com.ufu.finance.service.UserService;
+import com.ufu.finance.entity.Usuario;
+import com.ufu.finance.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
-    private UserService userService;
+    private UsuarioService usuarioService;
 
     @Autowired
     private JwtService jwtService;
@@ -21,18 +21,18 @@ public class AuthService {
      * A mensagem de erro é genérica para não revelar se o email existe ou não.
      */
     public AuthResponseDTO login(LoginDTO loginDTO) {
-        User user = userService.buscarPorEmail(loginDTO.getEmail())
+        Usuario usuario = usuarioService.buscarPorEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("Email ou senha inválidos"));
 
         // BCrypt compara a senha digitada com o hash armazenado
-        boolean senhaCorreta = userService.getPasswordEncoder()
-                .matches(loginDTO.getSenha(), user.getSenha());
+        boolean senhaCorreta = usuarioService.getPasswordEncoder()
+                .matches(loginDTO.getSenha(), usuario.getSenha());
 
         if (!senhaCorreta) {
             throw new RuntimeException("Email ou senha inválidos");
         }
 
-        String token = jwtService.generateToken(user.getId(), user.getNome());
-        return new AuthResponseDTO(token, user.getId(), user.getNome());
+        String token = jwtService.generateToken(usuario.getId(), usuario.getNome());
+        return new AuthResponseDTO(token, usuario.getId(), usuario.getNome());
     }
 }
