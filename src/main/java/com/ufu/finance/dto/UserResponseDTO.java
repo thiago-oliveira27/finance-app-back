@@ -2,8 +2,6 @@ package com.ufu.finance.dto;
 
 import com.ufu.finance.entity.User;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
