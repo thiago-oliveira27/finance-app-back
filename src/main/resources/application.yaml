@@ -22,5 +22,5 @@ server:
   port: 8080
 
 jwt:
-  secret: chave-secreta
+  secret: fHkl980UGl8cOfVCyfu518RnI37PtZt4C0xbJj1vw4IqdCMWlaXwgv8zGsIY8zxE
   expiration: 86400000
